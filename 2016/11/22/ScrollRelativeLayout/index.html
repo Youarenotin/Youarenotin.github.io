@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://yoursite.com/../../images/ScrollRelativeLayout/20160308135252337.png">
 <meta property="og:image" content="http://yoursite.com/../../images/ScrollRelativeLayout/20160308141644239.png">
 <meta property="og:image" content="http://yoursite.com/../../images/ScrollRelativeLayout/20160308142201860.png">
-<meta property="og:updated_time" content="2016-11-22T08:53:14.000Z">
+<meta property="og:updated_time" content="2016-11-22T09:37:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单的过度滑动回弹ScrollRelativeLayout">
 <meta name="twitter:description" content="本文是从别的博客迁移过来的,16年初写的,现在回头看来有点小儿科了,不过可以进行markdown的练手/呲牙
@@ -370,6 +370,7 @@
 <p>当在点击内部item的同时抖动的距离超过10个像素的话，我们认为该操作是要滑动而不是点击事件，故return true; 拦截事件的向下传递 ,由本类onTouchEvent处理。滑动处理部分在 move这个事件里,细节可参考 scrollto的用法。</p>
 <h4 id="解决问题二-滑动过程中松手后恢复事件在onTouchEvent中的ACTION-UP中处理-这里需要借助一个帮助类scroller-需要注意的是"><a href="#解决问题二-滑动过程中松手后恢复事件在onTouchEvent中的ACTION-UP中处理-这里需要借助一个帮助类scroller-需要注意的是" class="headerlink" title="解决问题二 : 滑动过程中松手后恢复事件在onTouchEvent中的ACTION_UP中处理,这里需要借助一个帮助类scroller,需要注意的是"></a>解决问题二 : 滑动过程中松手后恢复事件在onTouchEvent中的ACTION_UP中处理,这里需要借助一个帮助类scroller,需要注意的是</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private void startAnimation(int startY, int dy, int duration) &#123;</div><div class="line">        isMove = true;</div><div class="line">        mScroller.startScroll(0, startY, 0, dy, duration);</div><div class="line">        invalidate();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <p>中startY是相对于该空间最最原始的位置与移动过程无关并且它这个方向与我们常识中的坐标轴方向正好相反,好费解.<br>在invalidate()后会不断调用该view的computeScroll()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">   public void computeScroll() &#123;</div><div class="line">   //计算是否还有需要移动的距离</div><div class="line">       if (mScroller.computeScrollOffset()) &#123;//需要 继续用scroller是移动渲染界面</div><div class="line">           scrollTo(mScroller.getCurrX(), mScroller.getCurrY());</div><div class="line">           postInvalidate();</div><div class="line">           isMove = true;</div><div class="line">       &#125; else &#123;//不需要 ,移动完毕 </div><div class="line">           isMove = false;</div><div class="line">       &#125;</div><div class="line">       super.computeScroll();</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>标准惯例demo地址 <a href="https://github.com/Youarenotin/ScrollRelativeLayout" target="_blank" rel="external">here</a></p>
 <h3 id="总结-小细节问题基本上就这些。其中有几个关键技术点需要仔细看一些大手的文章和demo才能明白。"><a href="#总结-小细节问题基本上就这些。其中有几个关键技术点需要仔细看一些大手的文章和demo才能明白。" class="headerlink" title="总结: 小细节问题基本上就这些。其中有几个关键技术点需要仔细看一些大手的文章和demo才能明白。"></a>总结: 小细节问题基本上就这些。其中有几个关键技术点需要仔细看一些大手的文章和demo才能明白。</h3>
       
     </div>
